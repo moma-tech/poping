@@ -51,7 +51,7 @@ public class TestController {
 
   public static void main(String[] args) {
     String input =
-        "YmFzZS1zZXJ2aWNlOjpteC1ucC10b29scy13ZWI=.1_UE9TVDovc21zL3NlbmROb3RpZnk=";
+        "YXBpLXNlcnZpY2U6Om14LW5wLWFkbWlu.1_UE9TVDovdjEvdHJhZGUvbGlzdA==";
     String [] part = input.split("_");
     String service = part[0].split("\\.")[0];
     String end = part[1];
