@@ -1,6 +1,8 @@
 package top.moma.example.dynamicenum.utils;
 
-import java.lang.reflect.Field;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.*;
 
 public class ReflectHelper {
   /** Field Oprations */
@@ -17,7 +19,7 @@ public class ReflectHelper {
       throws NoSuchFieldException {
     Field field = null;
     Class<?> targetClass = beanClass;
-    while (null != targetClass && null == targetClass) {
+    while (null != targetClass && null == field) {
       try {
         field = targetClass.getDeclaredField(fieldName);
       } catch (NoSuchFieldException e) {
@@ -112,11 +114,131 @@ public class ReflectHelper {
       throws NoSuchFieldException, IllegalAccessException {
     Field field = getField(beanClass, fieldName);
     boolean accessible = field.isAccessible();
+    Field modifier = Field.class.getDeclaredField("modifiers");
+    modifier.setAccessible(true);
+    modifier.setInt(field, field.getModifiers() & ~Modifier.FINAL);
     field.setAccessible(true);
     try {
       field.set(beanClass, newValue);
     } finally {
       field.setAccessible(accessible);
     }
+  }
+
+  /** Method */
+  /**
+   * getMethod
+   *
+   * @param beanClass beanClass
+   * @param methodName methodName
+   * @param parameterTypes parameterTypes
+   * @return java.lang.reflect.Method
+   * @author Created by ivan
+   * @since 2022/6/15 10:43
+   */
+  public static Method getMethod(
+      final Class<?> beanClass, final String methodName, final Class<?>... parameterTypes)
+      throws NoSuchMethodException {
+    Method method = null;
+    Class<?> targetClass = beanClass;
+    while (null != targetClass && null == method) {
+      try {
+        method = targetClass.getDeclaredMethod(methodName, parameterTypes);
+      } catch (NoSuchMethodException e) {
+        targetClass = targetClass.getSuperclass();
+      }
+    }
+    if (null == method) {
+      throw new NoSuchMethodException();
+    }
+    return method;
+  }
+  /**
+   * invokeMethod
+   *
+   * @param bean bean
+   * @param methodName methodName
+   * @param values values
+   * @param parameterTypes parameterTypes
+   * @return java.lang.Object
+   * @author Created by ivan
+   * @since 2022/6/15 10:43
+   */
+  public static Object invokeMethod(
+      final Object bean,
+      final String methodName,
+      final Object[] values,
+      final Class<?>... parameterTypes)
+      throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    Method method = getMethod(bean.getClass(), methodName, parameterTypes);
+    boolean accessible = method.isAccessible();
+    Object value = null;
+    method.setAccessible(true);
+    try {
+      value = method.invoke(bean, values);
+    } finally {
+      method.setAccessible(accessible);
+    }
+    return value;
+  }
+
+  /** Constructor */
+  /**
+   * getConstructor
+   *
+   * @param beanClass beanClass
+   * @param parameterTypes parameterTypes
+   * @return java.lang.reflect.Constructor<?>
+   * @author Created by ivan
+   * @since 2022/6/15 10:43
+   */
+  public static Constructor<?> getConstructor(
+      final Class<?> beanClass, final Class<?>... parameterTypes) throws NoSuchMethodException {
+    Constructor[] constructors = beanClass.getDeclaredConstructors();
+    return beanClass.getDeclaredConstructor(parameterTypes);
+  }
+  /**
+   * invokeConstructor
+   *
+   * @param beanClass beanClass
+   * @param parameterTypes parameterTypes
+   * @param values values
+   * @return java.lang.Object
+   * @author Created by ivan
+   * @since 2022/6/15 10:43
+   */
+  public static Object invokeConstructor(
+      final Class<?> beanClass, final Class<?>[] parameterTypes, final Object[] values)
+      throws NoSuchMethodException, InvocationTargetException, InstantiationException,
+          IllegalAccessException {
+    Constructor<?> constructor = getConstructor(beanClass, parameterTypes);
+    boolean accessible = constructor.isAccessible();
+    Object instance = null;
+    constructor.setAccessible(true);
+    try {
+      instance = constructor.newInstance(values);
+    } finally {
+      constructor.setAccessible(accessible);
+    }
+    return instance;
+  }
+
+  @SuppressWarnings("restriction")
+  public static Object invokeEnumConstructor(
+      final Class<?> beanClass, final Class<?>[] parameterTypes, final Object[] values)
+      throws Throwable {
+    Constructor<?> constructor = getConstructor(beanClass, parameterTypes);
+    boolean accessible = constructor.isAccessible();
+    Object value = null;
+
+    constructor.setAccessible(true);
+    try {
+      MethodHandle handle = MethodHandles.lookup().unreflectConstructor(constructor);
+      value = handle.invokeWithArguments(values);
+    } finally {
+      constructor.setAccessible(accessible);
+    }
+
+    return value;
   }
 }

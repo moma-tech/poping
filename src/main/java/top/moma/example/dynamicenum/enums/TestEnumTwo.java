@@ -1,7 +1,7 @@
 package top.moma.example.dynamicenum.enums;
 
 public enum TestEnumTwo {
-  NANOPAY(1, "nanopay"),
+  NPAY(1, "npay"),
   GOOGLE(2, "google"),
   TWITTER(3, "twitter");
 
