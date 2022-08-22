@@ -1,0 +1,9 @@
+app:
+  id: dev-cc-collection
+apollo:
+  meta:
+  bootstrap:
+    namespaces: application
+    enabled: true
+    eagerLoad:
+      enabled: true

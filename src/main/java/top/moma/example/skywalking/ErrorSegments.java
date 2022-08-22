@@ -45,7 +45,9 @@ public class ErrorSegments {
         } else {
           data = dataString.split(",");
         }
-
+        if (!data[0].contains(".")) {
+          continue;
+        }
         List<String> content = ErrorSegments.readContent(data[0]);
         osw.write(content.get(0));
         osw.write(",");
@@ -72,10 +74,6 @@ public class ErrorSegments {
   }
 
   public static void main(String[] args) {
-    String input =
-            "CjY3OTU3MDhjMjQ3ZDI0Nzc5OWE3NTI1MmU0MWI1ZTE4ZS4yNzEuMTY1NTIyNjQ4NjM5MjgwMzMSNjc5NTcwOGMyNDdkMjQ3Nzk5YTc1MjUyZTQxYjVlMThlLjI4OS4xNjU1MjI2NDg2Mzk0MzcyNBrDAQgCEAEY/Jy/mZYwIJ2kv5mWMDIFL2RvdDI6EWQyLm5hbm9wYXkubXg6NDQzQAFIA1ACWAFiXwoDdXJsElhodHRwczovL2QyLm5hbm9wYXkubXgvZG90Mj9wa2c9Y29tLmxvYW4uY2FzaC5jcmVkaXQubmFub3BheW14JnZlcj0yLjUuOS4zMTQzJnVpdmVyPTExMDAxYhMKC2h0dHAubWV0aG9kEgRQT1NUYhcKEGh0dHAuc3RhdHVzX2NvZGUSAzUwMxo3CAYQBRiepL+ZljAgnqS/mZYwMh9KYWNrc29uL09iamVjdE1hcHBlci53cml0ZVZhbHVlQAJQdhq3AQgHEAUYnqS/mZYwIJ+kv5mWMDIiUm9ja2V0TVEvZGF0YXJhbmdlcnNFdmVudC9Qcm9kdWNlcjo5MTAuMTUyLjIwMC45NDo5ODc2OzEwLjE1Mi4xMzIuMTM3Ojk4NzY7MTAuMTUyLjE0Ny4zNzo5ODc2QAFIBFAmYiAKCW1xLmJyb2tlchITMTAuMTUyLjIwMC45NDoxMDkxMWIcCghtcS50b3BpYxIQZGF0YXJhbmdlcnNFdmVudBplCAUQBBiepL+ZljAgn6S/mZYwMk1teC5uYW5vcGF5LmRhdGEuY29sbGVjdGlvbi5tcS5yb2NrZXQuRGF0YWNvbGxlY3Rpb25Sb2NrZXRQcm9kdWNlci5zZW5kTWVzc2FnZUACUF0aUggEEAMYnaS/mZYwIJ+kv5mWMDI6bXgubmFub3BheS5kYXRhLmNvbGxlY3Rpb24ubXEuYWN0aXZlLlNlcnZlclByb2R1Y2VyLnNlbmRNcUACUF0abAgDEAEYnaS/mZYwIJ+kv5mWMDJUbXgubmFub3BheS5kYXRhLmNvbGxlY3Rpb24uc2VydmljZS5pbXBsLkRhdGFyYW5nZXJzRXZlbnRDb2xsZWN0b3JJbXBsLmFzeW5jU2VuZEV2ZW50QAJQXRpaCAEY+py/mZYwIJ+kv5mWMDJEbXgubmFub3BheS5kYXRhLmNvbGxlY3Rpb24uc2VydmljZS5pbXBsLkJpZ0RhdGFEb3RTZXJ2aWNlSW1wbC51cGxvYWRAAlBdGpwCEP///////////wEY+py/mZYwIJ+kv5mWMCrvAQgBEjY3OTU3MDhjMjQ3ZDI0Nzc5OWE3NTI1MmU0MWI1ZTE4ZS4yNzEuMTY1NTIyNjQ4NjM5MjgwMzMaNjc5NTcwOGMyNDdkMjQ3Nzk5YTc1MjUyZTQxYjVlMThlLjI3MS4xNjU1MjI2NDg2MzkyODAzMiADKiZhcGktc2VydmljZTo6bXgtbnAtZGF0YS1jb2xsZWN0aW9uLXdlYjItMTJiZTIyYjczMGZhNDFmY2FlMDIyYTVjZjJkMGU5ZTBAMTcyLjE2LjAuMTQ1OiJQT1NUOi9kYXRhQ29sbGVjdGlvbi9kb3QvdjEvdXBsb2FkMgtTcHJpbmdBc3luY0ACUEEiJmFwaS1zZXJ2aWNlOjpteC1ucC1kYXRhLWNvbGxlY3Rpb24td2ViKi0xMmJlMjJiNzMwZmE0MWZjYWUwMjJhNWNmMmQwZTllMEAxNzIuMTYuMC4xNDU=";
-
-
-    System.out.println(ErrorSegments.dataPart(input));
+    ErrorSegments.export();
   }
 }

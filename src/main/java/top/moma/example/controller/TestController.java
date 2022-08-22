@@ -1,4 +1,4 @@
-package top.moma.example.apollo;
+package top.moma.example.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,6 +6,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import top.moma.example.apollo.TestService;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -14,7 +15,8 @@ import java.util.Base64;
 @RestController
 @RequestMapping("/api/ex")
 public class TestController {
-  @Autowired TestService testService;
+  @Autowired
+  TestService testService;
 
   @GetMapping("/apm/value")
   @Cacheable(value = "user", key = "#uid")
@@ -38,14 +40,14 @@ public class TestController {
 
   @GetMapping("/test/getpost")
   public String getPost() {
-    String re = "{'a':'123'}";
-    String response = "";
-    try {
-      response = testService.sendPost(re);
-      return response;
-    } catch (Exception e) {
-      System.out.println(e);
-    }
+//    String re = "{'a':'123'}";
+//    String response = "";
+//    try {
+//      response = testService.sendPost(re);
+//      return response;
+//    } catch (Exception e) {
+//      System.out.println(e);
+//    }
     return "error";
   }
 

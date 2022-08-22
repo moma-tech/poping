@@ -1,0 +1,15 @@
+server:
+  port: 9999
+app:
+  id: dev-cc-collection
+apollo:
+  meta:
+  bootstrap:
+    namespaces: application
+    enabled: true
+    eagerLoad:
+      enabled: true
+spring:
+  messages:
+    basename: i18n/message
+    encoding: UTF-8
