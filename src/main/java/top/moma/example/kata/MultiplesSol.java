@@ -1,5 +1,12 @@
 package top.moma.example.kata;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 /**
  * If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9.
  * The sum of these multiples is 23.
@@ -17,6 +24,7 @@ public class MultiplesSol {
     if (number <= 0) {
       return 0;
     }
+    Set<Integer> all = new HashSet<>();
     boolean three = true;
     boolean five = true;
     int counter = 1;
@@ -25,7 +33,7 @@ public class MultiplesSol {
       if (three) {
         int tRe = counter * 3;
         if (tRe < number) {
-          total = total + counter * 3;
+          all.add(tRe);
         } else {
           three = false;
         }
@@ -33,13 +41,35 @@ public class MultiplesSol {
       if (five) {
         int tFv = counter * 5;
         if (tFv < number) {
-          total = total + counter * 5;
+          all.add(tFv);
         } else {
           five = false;
         }
       }
       counter++;
     }
-    return total;
+    return all.stream().collect(Collectors.summingInt(Integer::intValue));
+  }
+
+  public int solution2(int number) {
+    return IntStream.range(0, number).filter(n -> (n % 3 == 0) || (n % 5 == 0)).sum();
+  }
+
+  public static void main(String[] args) {
+    MultiplesSol multiplesSol = new MultiplesSol();
+    int input = 1000000;
+    Instant start;
+    Instant finish;
+    long timeElapsed;
+    start = Instant.now();
+    int out_1 = multiplesSol.solution(input);
+    finish = Instant.now();
+    timeElapsed = Duration.between(start, finish).toMillis();
+    System.out.println(timeElapsed);
+    start = Instant.now();
+    int out_2 = multiplesSol.solution2(input);
+    finish = Instant.now();
+    timeElapsed = Duration.between(start, finish).toMillis();
+    System.out.println(timeElapsed);
   }
 }
