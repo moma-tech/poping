@@ -1,10 +1,15 @@
 package top.moma.example.kata;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 /**
  * StripComments
  *
  * <p>Complete the solution so that it strips all text that follows any of a set of comment markers
- * passed in. Any whitespace at the end of the line should also be stripped out.
+ * passed in.
+ *
+ * <p>Any whitespace at the end of the line should also be stripped out.
  *
  * <p>Example:
  *
@@ -40,21 +45,31 @@ public class StripComments {
       String line = lines[i];
       for (String comment : commentSymbols) {
         int j = line.indexOf(comment.trim());
-        if (j > 0) {
+        if (j == 0) {
+          line = "";
+          break;
+        } else if (j > 0) {
           line = line.substring(0, j).trim();
         }
-        if (j == 0) {
-          break;
-        }
       }
-      stringBuilder.append(line).append("\n");
-    }
+      ;
 
-    return stringBuilder.toString().substring(0, stringBuilder.length() - 1);
+      stringBuilder.append(line.stripTrailing()).append("\n");
+    }
+    return stringBuilder.substring(0, stringBuilder.length() - 1);
+  }
+
+  public static String stripComments2(String text, String[] commentSymbols) {
+    String pattern =
+        String.format(
+            "[ ]*([%s].*)?$", Arrays.stream(commentSymbols).collect(Collectors.joining()));
+    return Arrays.stream(text.split("\n"))
+        .map(x -> x.replaceAll(pattern, ""))
+        .collect(Collectors.joining("\n"));
   }
 
   public static void main(String[] args) {
-    String text = "apples, pears # and bananas\ngrapes\nbananas !apples";
+    String text = " a\n b\nc";
     String[] commentSymbols = new String[] {"#", "!"};
     System.out.println(StripComments.stripComments(text, commentSymbols));
   }
