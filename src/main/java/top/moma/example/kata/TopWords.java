@@ -1,13 +1,17 @@
 package top.moma.example.kata;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
+import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.util.Collections.reverseOrder;
+import static java.util.Map.Entry.comparingByValue;
+import static java.util.function.UnaryOperator.identity;
+import static java.util.stream.Collectors.*;
 
 /**
  * TopWords
@@ -56,7 +60,7 @@ public class TopWords {
     String key;
     while (m.find()) {
       key = m.group();
-      if (!key.matches("[a-z]")) {
+      if (!key.matches(".*[a-z]+.*")) {
         continue;
       }
       if (records.containsKey(key)) {
@@ -67,12 +71,37 @@ public class TopWords {
     }
     tops_word =
         records.entrySet().stream()
-            .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+            .sorted(comparingByValue(Comparator.reverseOrder()))
             .limit(3)
             .map(Map.Entry::getKey)
-            .collect(Collectors.toList());
+            .collect(toList());
 
     return tops_word;
+  }
+
+  public static List<String> top32(String s) {
+    return Arrays.stream(s.toLowerCase().split("[^a-z*|']"))
+        .filter(o -> !o.isEmpty() && !o.replace("'", "").isEmpty())
+        .collect(groupingBy(Function.identity(), counting()))
+        .entrySet()
+        .stream()
+        .sorted(reverseOrder(comparingByValue()))
+        .map(Map.Entry::getKey)
+        .limit(3)
+        .collect(toList());
+  }
+
+  public static List<String> top33(final String s) {
+    return new Scanner(s.toLowerCase())
+            .findAll("'?[a-z]['a-z]*")
+            .map(MatchResult::group)
+            .collect(groupingBy(identity(), counting()))
+            .entrySet()
+            .stream()
+            .sorted(comparingByValue(reverseOrder()))
+            .limit(3)
+            .map(Map.Entry::getKey)
+            .collect(toList());
   }
 
   public static void main(String[] args) {
@@ -89,16 +118,16 @@ public class TopWords {
     // TopWords.top3(input);
     // Arrays.asList("e", "ddd", "aa")
     String input2 = "e e e e DDD ddd DdD: ddd ddd aa aA Aa, bb cc cC e e e";
-    TopWords.top3(input2);
+    TopWords.top3(input2).stream().forEach(System.out::println);
     // Arrays.asList("won't", "wont")
     String input3 = "  //wont won't won't ";
 
-    String some = "  //wont won't won't ";
-    String are = "[a-z']+";
-    Pattern s = Pattern.compile(are);
-    Matcher m = s.matcher(some);
-    while (m.find()) {
-      System.out.println(m.group());
-    }
+    //    String some = "  //wont won't won't ";
+    //    String are = "[a-z']+";
+    //    Pattern s = Pattern.compile(are);
+    //    Matcher m = s.matcher(some);
+    //    while (m.find()) {
+    //      System.out.println(m.group());
+    //    }
   }
 }
