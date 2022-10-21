@@ -13,7 +13,7 @@ public class SkyTest {
       Pattern p;
       p = Pattern.compile(reg);
       String input =
-          "aaacoreipb.MicroLoanCoreService.getOrdersLeftTotalAmount/server/Request/onComplete in core-service::mx-np-collection-service";
+          "coreipb.MicroLoanCoreService.getOrdersLeftTotalAmount/server/Request/onComplete in core-service::mx-np-collection-service";
       System.out.println(p.matcher(input).matches());
     } catch (FileNotFoundException e) {
       e.printStackTrace();
