@@ -8,17 +8,36 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.*;
 
 public class StreamMemos {
 
   public static void main(String[] args) {
-    //
+    StreamMemos streamMemos = new StreamMemos();
+    // streamMemos.collectEnd(streamMemos.vehicleStream());
+    // streamMemos.mapOp(streamMemos.vehicleStream());
+    // List<Vehicle> s = streamMemos.vehicleStream();
+    List<List<Integer>> lists = new ArrayList<>();
+    List<Integer> list1 = new ArrayList<>();
+    list1.add(2);
+    List<Integer> list2 = new ArrayList<>();
+    list2.add(3);
+    lists.add(list1);
+    lists.add(list2);
+
+    int rel =
+        lists.stream()
+            .reduce(
+                1,
+                (a, b) -> {
+                  System.out.println(a);
+                  System.out.println(b.get(0));
+                  return a + b.get(0);
+                },
+                Integer::sum);
+    System.out.println(rel); // return 5 instead of 4
   }
 
   public Stream<String> listStream() {
@@ -139,6 +158,7 @@ public class StreamMemos {
 
     return vehicles;
   }
+
   /**
    * 模拟两个Dealer dealerStream
    *
@@ -163,6 +183,149 @@ public class StreamMemos {
     return dealers;
   }
 
+  /**
+   * Match End OPs
+   *
+   * @param vehicleStream vehicleStream
+   * @return void
+   * @author Created by ivan
+   * @since 2022/11/17 15:20
+   */
+  public void matchEnd(List<Vehicle> vehicleStream) {
+    Supplier<Stream<Vehicle>> supplier = vehicleStream::stream;
+    // Match条件，是否wheels =4
+    boolean ifAllMatch = supplier.get().allMatch(vehicle -> vehicle.getWheels() == 4);
+    boolean ifAnyMatch = supplier.get().anyMatch(vehicle -> vehicle.getWheels() == 4);
+    boolean ifNoneMatch = supplier.get().noneMatch(vehicle -> vehicle.getWheels() == 4);
+    System.out.println("All 4 wheels: " + ifAllMatch);
+    System.out.println("Any 4 wheels: " + ifAnyMatch);
+    System.out.println("None 4 wheels: " + ifNoneMatch);
+    // Match条件，是否brand equals Audi
+    ifAllMatch = supplier.get().allMatch(vehicle -> vehicle.getBrand().equals("Audi"));
+    ifAnyMatch = supplier.get().anyMatch(vehicle -> vehicle.getBrand().equals("Audi"));
+    ifNoneMatch = supplier.get().noneMatch(vehicle -> vehicle.getBrand().equals("Audi"));
+    System.out.println("All Audi: " + ifAllMatch);
+    System.out.println("Any Audi: " + ifAnyMatch);
+    System.out.println("None Audi: " + ifNoneMatch);
+  }
+
+  /**
+   * Collect end OPs
+   *
+   * @param vehicleStream vehicleStream
+   * @return void
+   * @author Created by ivan
+   * @since 2022/11/17 15:20
+   */
+  public void collectEnd(List<Vehicle> vehicleStream) {
+    Supplier<Stream<Vehicle>> supplier = vehicleStream::stream;
+    // To List
+    List<Vehicle> vehicles =
+        supplier
+            .get()
+            .filter(vehicle -> vehicle.getBrand().equals("Audi"))
+            .collect(Collectors.toList());
+    System.out.println(" Audi List");
+    System.out.println(vehicles);
+
+    // To Set
+    Set<String> vehicleSet =
+        supplier.get().map(vehicle -> vehicle.getBrand()).collect(Collectors.toSet());
+    System.out.println(" Brand Set");
+    System.out.println(vehicleSet);
+
+    // To Map
+    Map<Long, Vehicle> vehicleMap =
+        supplier
+            .get()
+            .filter(vehicle -> vehicle.getBrand().equals("Audi"))
+            .collect(Collectors.toMap(Vehicle::getId, vehicle -> vehicle));
+    System.out.println("Audi Map");
+    System.out.println(vehicleMap);
+
+    // Group by
+    Map<String, List<Vehicle>> vehicleMap1 =
+        supplier
+            .get()
+            .filter(vehicle -> vehicle.getBrand().equals("Audi"))
+            .collect(Collectors.groupingBy(Vehicle::getYears));
+    System.out.println(" Group Map");
+    System.out.println(vehicleMap1);
+
+    // Join Strings
+    List<String> list = new ArrayList<>();
+    list.add("abc");
+    list.add("abc");
+    list.add("edf");
+    Stream<String> listStream = list.stream();
+    String newString = listStream.collect(Collectors.joining("-"));
+    System.out.println(" New String ");
+    System.out.println(newString);
+  }
+
+  /**
+   * forEach end Ops
+   *
+   * @param vehicleStream vehicleStream
+   * @return void
+   * @author Created by ivan
+   * @since 2022/11/17 15:20
+   */
+  public void foreachEnd(List<Vehicle> vehicleStream) {
+    Supplier<Stream<Vehicle>> supplier = vehicleStream::stream;
+    // print all
+    supplier
+        .get()
+        .filter(vehicle -> vehicle.getBrand().equals("Audi"))
+        .forEach(vehicle -> System.out.println(vehicle));
+    // add 1000 to price
+    supplier
+        .get()
+        .filter(vehicle -> vehicle.getBrand().equals("Audi"))
+        .forEach(vehicle -> vehicle.setPrice(vehicle.getPrice().add(new BigDecimal("1000"))));
+    // print again
+    supplier
+        .get()
+        .filter(vehicle -> vehicle.getBrand().equals("Audi"))
+        .forEach(vehicle -> System.out.println(vehicle));
+  }
+
+  /**
+   * Count end ops
+   *
+   * @param vehicleStream vehicleStream
+   * @return void
+   * @author Created by ivan
+   * @since 2022/11/17 16:37
+   */
+  public void countEnd(List<Vehicle> vehicleStream) {
+    Supplier<Stream<Vehicle>> supplier = vehicleStream::stream;
+
+    // Count
+    Long size = supplier.get().count();
+    System.out.println(size);
+
+    // Cheapest one
+    Vehicle vehicleMin =
+        supplier
+            .get()
+            .min((vehicle1, vehicle2) -> vehicle1.getPrice().compareTo(vehicle2.getPrice()))
+            .get();
+    System.out.println(vehicleMin);
+
+    // Dearest One, with Comparator
+    Vehicle vehicleMax = supplier.get().max(Comparator.comparing(Vehicle::getPrice)).get();
+    System.out.println(vehicleMax);
+  }
+
+  /**
+   * Filter ops
+   *
+   * @param vehicleStream vehicleStream
+   * @return void
+   * @author Created by ivan
+   * @since 2022/11/17 15:21
+   */
   public void filterOps(List<Vehicle> vehicleStream) {
     Supplier<Stream<Vehicle>> supplier = vehicleStream::stream;
     // 获取4个轮子的Audi
@@ -178,6 +341,14 @@ public class StreamMemos {
         .forEach(System.out::println);
   }
 
+  /**
+   * Map op
+   *
+   * @param vehicleStream vehicleStream
+   * @return void
+   * @author Created by ivan
+   * @since 2022/11/17 15:21
+   */
   public void mapOp(List<Vehicle> vehicleStream) {
     Supplier<Stream<Vehicle>> supplier = vehicleStream::stream;
     // 出售所有的Audi
@@ -208,6 +379,14 @@ public class StreamMemos {
     supplier.get().map(Vehicle::getId).collect(Collectors.toList()).forEach(System.out::println);
   }
 
+  /**
+   * Flat map op
+   *
+   * @param dealers dealers
+   * @return void
+   * @author Created by ivan
+   * @since 2022/11/17 15:21
+   */
   public void flatMapOp(List<Dealer> dealers) {
     Supplier<Stream<Dealer>> supplier = dealers::stream;
     // 获取全部车型
@@ -224,9 +403,16 @@ public class StreamMemos {
         .forEach(System.out::println);
   }
 
+  /**
+   * Stateful ops
+   *
+   * @param vehicles vehicles
+   * @return void
+   * @author Created by ivan
+   * @since 2022/11/17 15:21
+   */
   public void stateOp(List<Vehicle> vehicles) {
     Supplier<Stream<Vehicle>> supplier = vehicles::stream;
-
     // 取价格排序的前三
     supplier
         .get()
@@ -271,6 +457,16 @@ public class StreamMemos {
     private BigDecimal price;
     private String years;
     private Boolean sale;
+
+    public Vehicle(Vehicle v) {
+      this.id = v.id;
+      this.brand = v.brand;
+      this.wheels = v.wheels;
+      this.type = v.type;
+      this.price = v.price;
+      this.years = v.years;
+      this.sale = v.sale;
+    }
   }
 
   /**

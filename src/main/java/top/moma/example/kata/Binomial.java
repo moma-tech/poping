@@ -1,5 +1,8 @@
 package top.moma.example.kata;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Binomial
  *
@@ -46,5 +49,15 @@ public class Binomial {
   public static String expand(String expr) {
 
     return "";
+  }
+
+  public static void main(String[] args) {
+    List arrayList = new ArrayList();
+    arrayList.add("aaaa");
+    arrayList.add(100);
+
+    for (int i = 0; i < arrayList.size(); i++) {
+      System.out.println(arrayList.get(i));
+    }
   }
 }

@@ -30,7 +30,6 @@ public class TestController {
 
   @GetMapping("/test/v")
   public String getT(String uid) {
-
     log.info("--------Test - T");
     return "TEst V";
   }
