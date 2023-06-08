@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-size: 14px;
+            line-height: 24px;
+        }
+
+        table {
+            width: 100%;
+            font-size: 12px;
+            border-spacing: 0;
+        }
+
+        .bill_table {
+            margin-top: 24px;
+            border: 1px solid #fff;
+            border-radius: 10px;
+            border-spacing: 0;
+            overflow: hidden;
+        }
+
+        .bill_table th, .bill_table td {
+            text-align: center;
+        }
+
+        .content_table {
+            min-width: 375px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .center {
+            font-size: 12px;
+            text-align: center;
+        }
+
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            src: url(fonts/Roboto Regular.ttf);
+            -fs-font-subset: complete-font;
+        }
+    </style>
+</head>
+<body>
+<table class="content_table">
+    <tbody>
+    <tr>
+        <td>
+            <div style="position: relative; width: 100%; padding: 1% 50px; border-radius: 12px; box-sizing: border-box; background: #F7F6FD;">
+                <img src='https://cdn.midjourney.com/cdfbb3c2-816d-4cab-8d68-bdeba5bf0a0b/grid_0.png'
+                     style="display: block; width: 24%; margin: 4px auto;"/>
+                <!-- <div class="bg"></div> -->
+                <div class="center" style="font-size: 28px; margin: 30px 0 10px;">Dear <span th:text="${name}">,</span>
+                </div>
+                <p class="center" style="color: rgba(0, 0, 0, 0.65);">The transaction records has
+                    been generated, recording
+                    the date range from <span th:text="${stmtStartDate}"></span> to <span
+                            th:text="${stmtEndDate}"></span>.</p>
+                <table class="bill_table">
+                    <thead>
+                    <tr style="height: 44px; background: #210F60; color: #ffffff">
+                        <th>Date</th>
+                        <th>Property ID/Account Number</th>
+                        <th>Name</th>
+                        <th>Amount</th>
+                        <th>Collection/Transfer</th>
+                        <th>Channel</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr style="height: 44px; background: #ffffff" th:each="trans:${transList}">
+                        <td th:text="${trans.date}"></td>
+                        <td th:text="${trans.accountNo}"></td>
+                        <td style="font-family: 'Roboto',serif" th:text="${trans.name}"></td>
+                        <td style="font-family: 'Roboto',serif" th:text="${trans.amount}"></td>
+                        <td th:text="${trans.type}"></td>
+                        <td style="font-family: 'Roboto',serif" th:text="${trans.channel}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p>Copyright Ⓒ 2023 www.mmtech.top</p>
+                <p class="pt_24">Generate PDF base on HTML Template.</p>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

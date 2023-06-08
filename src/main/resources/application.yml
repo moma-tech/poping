@@ -1,7 +1,7 @@
 server:
   port: 9999
 app:
-  id: dev-cc-collection
+  id: opay-apollo-test
 apollo:
   meta:
   bootstrap:

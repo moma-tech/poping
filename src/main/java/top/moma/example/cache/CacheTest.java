@@ -1,16 +1,14 @@
 package top.moma.example.cache;
 
 import com.alibaba.fastjson2.JSON;
-import lombok.Builder;
-import lombok.Data;
-import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.Builder;
+import lombok.Data;
 
-@Component
+// @Component
 public class CacheTest {
   public void cacheAdd() {
     Map cacheMap = new HashMap<String, String>();
