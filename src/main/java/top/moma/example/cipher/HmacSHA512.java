@@ -27,9 +27,13 @@ public class HmacSHA512 {
    * @author Created by ivan
    * @since 2023/2/3 11:28
    */
-  public static String hmacSHA512(String data)
-      throws NoSuchAlgorithmException, InvalidKeyException {
-    return hmacSHA512(data, SHA512_DEF_KEY);
+  public static String sign(String data) {
+    try {
+      return sign(data, SHA512_DEF_KEY);
+    } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+      log.error("HmacSHA512, sign, input data :{}", data, e);
+    }
+    return "";
   }
 
   /**
@@ -41,7 +45,7 @@ public class HmacSHA512 {
    * @author Created by ivan
    * @since 2023/2/2 12:18
    */
-  public static String hmacSHA512(String data, String key)
+  public static String sign(String data, String key)
       throws NoSuchAlgorithmException, InvalidKeyException {
     SecretKeySpec secretKeySpec =
         new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), HMAC_SHA512);

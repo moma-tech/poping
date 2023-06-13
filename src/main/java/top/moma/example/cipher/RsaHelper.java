@@ -10,6 +10,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.Signature;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -19,7 +20,6 @@ import java.util.Base64;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -31,19 +31,32 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RsaHelper {
 
-  private static final String RSA_CIPHER = "RSA/ECB/OAEPWITHSHA-256ANDMGF1PADDING";
-  private static final String RSA_SIGN_CIPHER = "SHA256withRSA";
+  private static final String RSA_CIPHER_ALGORITHM_PUB2PRI =
+      "RSA/ECB/OAEPWITHSHA-256ANDMGF1PADDING";
+  private static final String RSA_CIPHER_ALGORITHM_PRI2PUB = "RSA/ECB/PKCS1Padding";
+  private static final String RSA_SIGN_ALGORITHM = "SHA256withRSA";
+  private static final String RSA_KEY_FACTORY = "RSA";
+  private static final Integer RSA_KEY_SIZE = 2048;
   public static final String RSA_PUBLIC_KEY =
       "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzAknkiaQoddb/hG6vzo8bCPAXOduih17wGn86CBVV88I5ZFm2aAqEhfn36UAdHgOf/s15qMisbot2Usz3r6EzOjC6Ia65N+Jvj6y2PKaY8QC1K5mjqfAx5zJTOTY82WmNMwSv7R78iF6/ObxHjkpvk5ExVnHWqiBk2Id5G1eX5CRt+wrmO32Vcq5qPGGZUMaxXw5OdPvZJwQZJ1fhwhfDBLvDUP4pwqxOxOJ0md15smB2B3Jwsw4k8WKLvZY+EBpfaYqEE1flXraj6Cc56CWMPn3S3OiK/UkZH6L4LgdNO7eMow1jvteQHXuwi3vBJiTS14M3yas5TTZuic4Um97cwIDAQAB";
   public static final String RSA_PRIVATE_KEY =
       "MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDMCSeSJpCh11v+Ebq/OjxsI8Bc526KHXvAafzoIFVXzwjlkWbZoCoSF+ffpQB0eA5/+zXmoyKxui3ZSzPevoTM6MLohrrk34m+PrLY8ppjxALUrmaOp8DHnMlM5NjzZaY0zBK/tHvyIXr85vEeOSm+TkTFWcdaqIGTYh3kbV5fkJG37CuY7fZVyrmo8YZlQxrFfDk50+9knBBknV+HCF8MEu8NQ/inCrE7E4nSZ3XmyYHYHcnCzDiTxYou9lj4QGl9pioQTV+VetqPoJznoJYw+fdLc6Ir9SRkfovguB007t4yjDWO+15Ade7CLe8EmJNLXgzfJqzlNNm6JzhSb3tzAgMBAAECggEAHmOKqkDmL8Skpe28E7k3wJ9+ihfKJfYINXtTuLsAGwjx+Uczu1wYiANZfLzVmYM8HaGrwIMxqqjhJUkHG7jijKZqSTmv4mDM4jHyb0+K4SsThNvI2JxxoQlgDfzTt0S/gYOXk0ftYf3MlJhM90RqTDbaFU6u23jXe70UWK5VbQQV7Jt0jV+2IU7B5v2f20Pgqed6y9DVrFDfJsthe2vtCw0l6tgkziUX7a+1VGC2wQBGwre6OZ2Gn9hxxz2R607ccF3/yqvfLg0DKa8CkaNxIAn482zt2KQyjgYW5ARoD0O+MshZ4Yh5WoOtKwu6k51cX76XRBRbM3ligW7Fu2Li8QKBgQD40iwF96eWiXotus+He6qdoX3yD6XQ7t6V0Pmr5xSgy3Fpr+COAAb/wfdobm63jUWvREDNmFcVglXpuIBlaMBUo1hNuE9tBX6a/zAhzfG24NPuBV4QySg3nqYxRtifXVjoL9+BB0ZoIdy/L3pIK+jT/GXlDBJmLYb1iKaUOJ/s6wKBgQDR7DFCU5xA+yiftjrIuxOFTYhlcvFq1BcH+WlrHOLQjzOUNZnEjOUpzrlH98jtuQg/f2tzW5ZBUvmdsOKNb77SmQpSjoAJVFB0/wiJj35il4kRp+nXNodJnCdgqBs7+A9M4tjaj+Fdy2FAmf7am/Jj05lsjCVDjGp2dxMxMmvpmQKBgHl4URmQr3XkI4tTmaCwlLhjcFLNpMt88Zj97gUnyIA/EVzhCaUJCmGtVZTb5J0jEJPhpCk6Z7kOadaxxay8GLi5DZDTm6LDfe05C0xVd90poQyf/i3/peyRPNztky8pqQ+g32HkJVEMxvFmwjGdjgp/O1c4L3tGWo5facMOabSFAoGADq06zG5YEFr+/huZhIs/1CQVkzI0Gsn1SkNv0WNVoEtCyevtckZ/hyrC3Xs/ew9iuj3IX2pZ2PtaJGJHlKfpaYP1qsv3u68/aM6j5Co6Jd5+YNOij79qOgVG44UdUlYHi9KYYr+IfCxKAmBB5zrb+YrDwUkTGePpVZsBpoDl9pECgYBTtiw1E5a15gSis7fTMGTBPSd7o4UXAnnbXYPRoQZs7/yjhQzrXj/JhrvoEqR2dUh4ROyVncK7dlX7a1s78wTeasMBI+C2TrqHb1YmxVolWL+7o+8o52OnEJSQplzrjvtQYD/5iTQ59HEYXzqRtsfyZ/3XbvAx1L64r16g1VR8vw==";
 
+  /**
+   * 计算签名 generateSign
+   *
+   * @param data data
+   * @param key private key
+   * @return java.lang.String
+   * @author Created by ivan
+   * @since 2023/6/13 14:46
+   */
   public static String generateSign(String data, String key) {
     String result = "";
     try {
-      Signature signature = Signature.getInstance(RSA_SIGN_CIPHER);
+      Signature signature = Signature.getInstance(RSA_SIGN_ALGORITHM);
       PrivateKey priKey =
-          KeyFactory.getInstance("RSA")
+          KeyFactory.getInstance(RSA_KEY_FACTORY)
               .generatePrivate(
                   new PKCS8EncodedKeySpec(
                       Base64.getDecoder().decode(key.getBytes(StandardCharsets.UTF_8))));
@@ -57,12 +70,47 @@ public class RsaHelper {
     return result;
   }
 
+  /**
+   * 校验签名 verifySign
+   *
+   * @param data data
+   * @param sign sign
+   * @param key pubkey
+   * @return boolean
+   * @author Created by ivan
+   * @since 2023/6/13 15:56
+   */
+  public static boolean verifySign(String data, String sign, String key) {
+    boolean result = false;
+    try {
+      Signature signature = Signature.getInstance(RSA_SIGN_ALGORITHM);
+      PublicKey pubKey =
+          KeyFactory.getInstance(RSA_KEY_FACTORY)
+              .generatePublic(
+                  new X509EncodedKeySpec(
+                      Base64.getDecoder().decode(key.getBytes(StandardCharsets.UTF_8))));
+      signature.initVerify(pubKey);
+      signature.update(data.getBytes(StandardCharsets.UTF_8));
+      result = signature.verify(Base64.getDecoder().decode(sign.getBytes(StandardCharsets.UTF_8)));
+    } catch (Exception e) {
+      log.error("RsaHelper,verifySign, error", e);
+    }
+    return result;
+  }
+
+  /**
+   * 密钥对生成 generateKey
+   *
+   * @return java.lang.String[]
+   * @author Created by ivan
+   * @since 2023/6/13 14:46
+   */
   public static String[] generateKey() {
     String[] keyP = new String[2];
     KeyPairGenerator kpg;
     try {
-      kpg = KeyPairGenerator.getInstance(RSA_CIPHER);
-      kpg.initialize(2048);
+      kpg = KeyPairGenerator.getInstance(RSA_KEY_FACTORY);
+      kpg.initialize(RSA_KEY_SIZE);
       KeyPair keyPair = kpg.generateKeyPair();
       keyP[0] = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
       keyP[1] = Base64.getEncoder().encodeToString(keyPair.getPrivate().getEncoded());
@@ -188,8 +236,10 @@ public class RsaHelper {
     try {
       RSAPublicKey rsaPublicKey =
           (RSAPublicKey)
-              KeyFactory.getInstance(RSA_CIPHER).generatePublic(new X509EncodedKeySpec(decoded));
-      return rsaEncCipher(data, rsaPublicKey);
+              KeyFactory.getInstance(RSA_KEY_FACTORY)
+                  .generatePublic(new X509EncodedKeySpec(decoded));
+      Cipher cipher = Cipher.getInstance(RSA_CIPHER_ALGORITHM_PUB2PRI);
+      return rsaEncCipher(data, rsaPublicKey, cipher);
     } catch (Exception e) {
       log.error("encryptByRSA2048PubKey error.", e);
       return null;
@@ -209,8 +259,10 @@ public class RsaHelper {
     try {
       RSAPublicKey rsaPublicKey =
           (RSAPublicKey)
-              KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(decoded));
-      return rsaDecCipher(cipherText, rsaPublicKey);
+              KeyFactory.getInstance(RSA_KEY_FACTORY)
+                  .generatePublic(new X509EncodedKeySpec(decoded));
+      Cipher cipher = Cipher.getInstance(RSA_CIPHER_ALGORITHM_PRI2PUB);
+      return rsaDecCipher(cipherText, rsaPublicKey, cipher);
     } catch (Exception e) {
       log.error("decryptByRSA2048PubKey error.", e);
       return null;
@@ -230,8 +282,10 @@ public class RsaHelper {
     try {
       RSAPrivateKey rsaPrivateKey =
           (RSAPrivateKey)
-              KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(decoded));
-      return rsaEncCipher(cipherText, rsaPrivateKey);
+              KeyFactory.getInstance(RSA_KEY_FACTORY)
+                  .generatePrivate(new PKCS8EncodedKeySpec(decoded));
+      Cipher cipher = Cipher.getInstance(RSA_CIPHER_ALGORITHM_PRI2PUB);
+      return rsaEncCipher(cipherText, rsaPrivateKey, cipher);
     } catch (Exception e) {
       log.error("encryptByRSA2048PriKey error.", e);
       return null;
@@ -251,8 +305,10 @@ public class RsaHelper {
     try {
       RSAPrivateKey rsaPrivateKey =
           (RSAPrivateKey)
-              KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(decoded));
-      return rsaDecCipher(cipherText, rsaPrivateKey);
+              KeyFactory.getInstance(RSA_KEY_FACTORY)
+                  .generatePrivate(new PKCS8EncodedKeySpec(decoded));
+      Cipher cipher = Cipher.getInstance(RSA_CIPHER_ALGORITHM_PUB2PRI);
+      return rsaDecCipher(cipherText, rsaPrivateKey, cipher);
     } catch (Exception e) {
       log.error("decryptByRSA2048PriKey error.", e);
       return null;
@@ -264,14 +320,13 @@ public class RsaHelper {
    *
    * @param source source
    * @param rsaKey rsaKey
+   * @param cipher cipher
    * @return java.lang.String
    * @author Created by ivan
    * @since 2023/2/2 15:48
    */
-  private static String rsaEncCipher(String source, Key rsaKey)
-      throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException,
-          IllegalBlockSizeException, BadPaddingException, IOException {
-    Cipher cipher = Cipher.getInstance(RSA_CIPHER);
+  private static String rsaEncCipher(String source, Key rsaKey, Cipher cipher)
+      throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, IOException {
     cipher.init(Cipher.ENCRYPT_MODE, rsaKey);
     byte[] datas = source.getBytes(StandardCharsets.UTF_8);
     int inputLen = datas.length;
@@ -299,14 +354,13 @@ public class RsaHelper {
    *
    * @param cipherText cipherText
    * @param rsaKey rsaKey
+   * @param cipher cipher
    * @return java.lang.String
    * @author Created by ivan
    * @since 2023/2/2 15:48
    */
-  private static String rsaDecCipher(String cipherText, Key rsaKey)
-      throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException,
-          IllegalBlockSizeException, BadPaddingException, IOException {
-    Cipher cipher = Cipher.getInstance(RSA_CIPHER);
+  private static String rsaDecCipher(String cipherText, Key rsaKey, Cipher cipher)
+      throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, IOException {
     cipher.init(Cipher.DECRYPT_MODE, rsaKey);
     byte[] inputByte = Base64.getDecoder().decode(cipherText.getBytes(StandardCharsets.UTF_8));
     int inputLen = inputByte.length;
