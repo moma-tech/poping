@@ -1,14 +1,5 @@
 server:
   port: 9999
-app:
-  id: opay-apollo-test
-apollo:
-  meta:
-  bootstrap:
-    namespaces: application
-    enabled: true
-    eagerLoad:
-      enabled: true
 spring:
   messages:
     basename: i18n/message
