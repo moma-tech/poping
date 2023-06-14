@@ -5,6 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import top.moma.example.infrastructure.hepler.cipher.HmacSHA512;
 
 @Slf4j
 class HmacSHA512Test {

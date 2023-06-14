@@ -1,4 +1,4 @@
-package top.moma.example.utils.spring;
+package top.moma.example.infrastructure.hepler.spring;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

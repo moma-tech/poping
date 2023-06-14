@@ -3,6 +3,7 @@ package top.moma.example.cipher;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import top.moma.example.infrastructure.hepler.cipher.RsaHelper;
 
 @Slf4j
 class RsaHelperTest {

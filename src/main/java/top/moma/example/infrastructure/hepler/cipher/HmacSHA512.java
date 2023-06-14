@@ -1,4 +1,4 @@
-package top.moma.example.cipher;
+package top.moma.example.infrastructure.hepler.cipher;
 
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;

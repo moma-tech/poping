@@ -1,9 +1,13 @@
 server:
   port: 9999
 spring:
-  messages:
-    basename: i18n/message
-    encoding: UTF-8
-  redis:
-    host: localhost
-    port: 6379
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://101.42.232.28:3306/test?tinyInt1isBit=false&useUnicode=true&autoReconnect=true&useSSL=false&characterEncoding=UTF8&allowMultiQueries=true&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true
+    username: ivan
+    password: ENC(4ef3VH7WWLfa2NgDI6rQGAxWx73//KP7ak42FaPjMYF297NWNpZR66eJZMGn+ZbP)
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false

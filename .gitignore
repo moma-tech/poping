@@ -31,3 +31,4 @@ build/
 ### VS Code ###
 .vscode/
 /csv/
+!/src/test/java/top/moma/example/framework/tools/JasyptToolTest.java

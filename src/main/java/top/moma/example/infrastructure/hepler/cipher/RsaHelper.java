@@ -1,4 +1,4 @@
-package top.moma.example.cipher;
+package top.moma.example.infrastructure.hepler.cipher;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
