@@ -7,6 +7,12 @@ import top.moma.example.domain.author.repository.facade.AuthorRepository;
 import top.moma.example.domain.author.repository.po.AuthorPO;
 import top.moma.example.infrastructure.common.GeneralException;
 
+/**
+ * AuthorRepositoryImpl
+ *
+ * @version 1.0
+ * @author Created by ivan at 10:53.
+ */
 @Service
 public class AuthorRepositoryImpl implements AuthorRepository {
   final AuthorDAO authorDAO;

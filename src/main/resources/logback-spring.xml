@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <!--设置系统日志目录-->
+  <property name="APP_NAME" value="moma-example"/>
+  <property name="LOG_DIR" value="${LOG_PATH:-.}/${APP_NAME}}"/>
+  <property name="FILE_PATTERN"
+    value="*****[%d{yyyy-MM-dd HH:mm:ss.SSS}][%thread][%level][%tid] %logger Line:%-3L - %msg%n"/>
+  <property name="CONSOLE_PATTERN"
+    value="*****%clr([%d{yyyy-MM-dd HH:mm:ss.SSS}]){yellow}%clr([%thread][%level]){red}%clr([%tid]){green} %logger %clr(Line:%-3L){red} - %msg%n"/>
+
+
+  <contextName>${APP_NAME}</contextName>
+  <!-- 彩色日志 -->
+  <!-- 彩色日志依赖的渲染类 -->
+  <conversionRule conversionWord="clr"
+    converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+  <conversionRule conversionWord="wex"
+    converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+  <conversionRule conversionWord="wEx"
+    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+
+  <!-- Console -->
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <!--encoder 默认配置为PatternLayoutEncoder-->
+    <encoder>
+      <pattern>${CONSOLE_PATTERN}</pattern>
+      <charset>utf-8</charset>
+    </encoder>
+  </appender>
+
+  <!-- Error -->
+  <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOG_DIR}/log_error.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${LOG_DIR}/error/%d{yyyy-MM-dd}/log-error-%d{yyyy-MM-dd}.%i.log
+      </fileNamePattern>
+      <maxHistory>30</maxHistory>
+      <timeBasedFileNamingAndTriggeringPolicy
+        class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <maxFileSize>2MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+    </rollingPolicy>
+    <append>true</append>
+    <encoder>
+      <pattern>${PATTERN}</pattern>
+      <charset>utf-8</charset>
+    </encoder>
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>ERROR</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+  </appender>
+
+  <!-- Warn -->
+  <appender name="WARN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOG_DIR}/log_warn.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${LOG_DIR}/warn/%d{yyyy-MM-dd}/log-warn-%d{yyyy-MM-dd}.%i.log
+      </fileNamePattern>
+      <maxHistory>30</maxHistory>
+      <timeBasedFileNamingAndTriggeringPolicy
+        class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <maxFileSize>10MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+    </rollingPolicy>
+    <append>true</append>
+    <encoder>
+      <pattern>${PATTERN}</pattern>
+      <charset>utf-8</charset>
+    </encoder>
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>WARN</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+  </appender>
+
+  <!-- Info -->
+  <appender name="INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOG_DIR}/log_info.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${LOG_DIR}/info/%d{yyyy-MM-dd}/log-info-%d{yyyy-MM-dd}.%i.log
+      </fileNamePattern>
+      <maxHistory>7</maxHistory>
+      <timeBasedFileNamingAndTriggeringPolicy
+        class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <maxFileSize>100MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+    </rollingPolicy>
+    <append>true</append>
+    <encoder>
+      <pattern>${PATTERN}</pattern>
+      <charset>utf-8</charset>
+    </encoder>
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>INFO</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+  </appender>
+
+
+  <logger name="org.springframework" level="WARN"/>
+  <logger name="org.apache.catalina" level="OFF"/>
+
+  <!-- 本地环境 -->
+  <springProfile name="local">
+    <root level="debug">
+      <appender-ref ref="STDOUT"/>
+      <appender-ref ref="INFO"/>
+      <appender-ref ref="WARN"/>
+      <appender-ref ref="ERROR"/>
+    </root>
+  </springProfile>
+
+  <!-- 开发环境 -->
+  <springProfile name="dev">
+    <root level="debug">
+      <appender-ref ref="STDOUT"/>
+      <appender-ref ref="INFO"/>
+      <appender-ref ref="WARN"/>
+      <appender-ref ref="ERROR"/>
+    </root>
+  </springProfile>
+
+  <!-- 测试环境 -->
+  <springProfile name="test">
+    <root level="info">
+      <appender-ref ref="STDOUT"/>
+      <appender-ref ref="INFO"/>
+      <appender-ref ref="WARN"/>
+      <appender-ref ref="ERROR"/>
+    </root>
+  </springProfile>
+
+  <!-- uat环境 -->
+  <springProfile name="uat">
+    <root level="info">
+      <appender-ref ref="INFO"/>
+      <appender-ref ref="WARN"/>
+      <appender-ref ref="ERROR"/>
+    </root>
+  </springProfile>
+
+  <!-- 生产环境 -->
+  <springProfile name="prod">
+    <root level="info">
+      <appender-ref ref="INFO"/>
+      <appender-ref ref="WARN"/>
+      <appender-ref ref="ERROR"/>
+    </root>
+  </springProfile>
+</configuration>
