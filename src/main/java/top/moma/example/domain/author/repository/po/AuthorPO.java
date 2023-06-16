@@ -1,14 +1,11 @@
 package top.moma.example.domain.author.repository.po;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.criteria.Predicate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +14,6 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
-import org.springframework.data.jpa.domain.Specification;
 import top.moma.example.infrastructure.common.BasePO;
 
 @Getter
@@ -72,64 +68,18 @@ public class AuthorPO extends BasePO {
     return Objects.equals(authorId, that.authorId);
   }
 
-  private static final String AUTHOR_ID = "author_id";
-  private static final String AUTHOR_FIRST_NAME = "author_first_name";
-  private static final String AUTHOR_MID_NAME = "author_mid_name";
-  private static final String AUTHOR_LAST_NAME = "author_last_name";
-  private static final String AUTHOR_PHONE = "author_phone";
-  private static final String AUTHOR_AGE = "author_age";
-  private static final String DELETE_MARK = "delete_mark";
-  private static final String REMARKS = "remarks";
-  private static final String TENANT_ID = "tenant_id";
-  private static final String REVISION = "revision";
-  private static final String CREATE_USER = "create_user";
-  private static final String CREATE_TIME = "create_time";
-  private static final String UPDATE_USER = "update_user";
-  private static final String UPDATE_TIME = "update_time";
-
-  /**
-   * querySpecification
-   *
-   * @param authorPO authorPO
-   * @return
-   *     org.springframework.data.jpa.domain.Specification<top.moma.example.domain.author.repository.po.AuthorPO>
-   * @author Created by ivan
-   * @since 2023/6/14 18:02
-   */
-  public static Specification<AuthorPO> querySpecification(AuthorPO authorPO) {
-    return (root, query, criteriaBuilder) -> {
-      // 用列表装载断言对象
-      List<Predicate> predicates = new ArrayList<>();
-      predicates.add(
-          criteriaBuilder.equal(root.get(AuthorPO.DELETE_MARK), authorPO.getDeleteMark()));
-      if (Objects.nonNull(authorPO.getAuthorId())) {
-        predicates.add(criteriaBuilder.equal(root.get(AuthorPO.AUTHOR_ID), authorPO.getAuthorId()));
-      }
-      if (Objects.nonNull(authorPO.getAuthorFirstName())) {
-        predicates.add(
-            criteriaBuilder.like(
-                root.get(AuthorPO.AUTHOR_FIRST_NAME), authorPO.getAuthorFirstName() + "%"));
-      }
-      if (Objects.nonNull(authorPO.getAuthorMidName())) {
-        predicates.add(
-            criteriaBuilder.like(
-                root.get(AuthorPO.AUTHOR_MID_NAME), authorPO.getAuthorMidName() + "%"));
-      }
-      if (Objects.nonNull(authorPO.getAuthorLastName())) {
-        predicates.add(
-            criteriaBuilder.like(
-                root.get(AuthorPO.AUTHOR_LAST_NAME), authorPO.getAuthorLastName() + "%"));
-      }
-      if (Objects.nonNull(authorPO.getAuthorPhone())) {
-        predicates.add(
-            criteriaBuilder.equal(root.get(AuthorPO.AUTHOR_PHONE), authorPO.getAuthorPhone()));
-      }
-      if (Objects.nonNull(authorPO.getAuthorAge())) {
-        predicates.add(
-            criteriaBuilder.equal(root.get(AuthorPO.AUTHOR_AGE), authorPO.getAuthorAge()));
-      }
-      Predicate[] pre = new Predicate[predicates.size()];
-      return criteriaBuilder.and(predicates.toArray(pre));
-    };
-  }
+  public static final String AUTHOR_ID = "author_id";
+  public static final String AUTHOR_FIRST_NAME = "author_first_name";
+  public static final String AUTHOR_MID_NAME = "author_mid_name";
+  public static final String AUTHOR_LAST_NAME = "author_last_name";
+  public static final String AUTHOR_PHONE = "author_phone";
+  public static final String AUTHOR_AGE = "author_age";
+  public static final String DELETE_MARK = "delete_mark";
+  public static final String REMARKS = "remarks";
+  public static final String TENANT_ID = "tenant_id";
+  public static final String REVISION = "revision";
+  public static final String CREATE_USER = "create_user";
+  public static final String CREATE_TIME = "create_time";
+  public static final String UPDATE_USER = "update_user";
+  public static final String UPDATE_TIME = "update_time";
 }
