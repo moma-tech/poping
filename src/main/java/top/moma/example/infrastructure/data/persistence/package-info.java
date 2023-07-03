@@ -8,4 +8,4 @@
  * @version 1.0
  * @author Created by ivan at 17:03.
  */
-package top.moma.example.domain.author.repository.persistence;
+package top.moma.example.infrastructure.data.persistence;

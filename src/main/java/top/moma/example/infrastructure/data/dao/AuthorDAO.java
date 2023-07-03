@@ -1,4 +1,4 @@
-package top.moma.example.domain.author.repository.dao;
+package top.moma.example.infrastructure.data.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

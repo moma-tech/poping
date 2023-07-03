@@ -1,4 +1,4 @@
-package top.moma.example.infrastructure.hepler.spring;
+package top.moma.example.framework.spring;
 
 import java.util.Objects;
 import org.springframework.context.ApplicationContext;

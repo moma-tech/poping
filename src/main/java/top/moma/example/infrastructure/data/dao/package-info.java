@@ -8,4 +8,4 @@
  * @version 1.0
  * @author Created by ivan at 16:59.
  */
-package top.moma.example.domain.author.repository.dao;
+package top.moma.example.infrastructure.data.dao;

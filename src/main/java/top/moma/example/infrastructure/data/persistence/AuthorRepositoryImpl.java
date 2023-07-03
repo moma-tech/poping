@@ -1,4 +1,4 @@
-package top.moma.example.domain.author.repository.persistence;
+package top.moma.example.infrastructure.data.persistence;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,10 +6,10 @@ import java.util.Objects;
 import javax.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import top.moma.example.domain.author.repository.dao.AuthorDAO;
 import top.moma.example.domain.author.repository.facade.AuthorRepository;
 import top.moma.example.domain.author.repository.po.AuthorPO;
 import top.moma.example.infrastructure.common.GeneralException;
+import top.moma.example.infrastructure.data.dao.AuthorDAO;
 
 /**
  * AuthorRepositoryImpl

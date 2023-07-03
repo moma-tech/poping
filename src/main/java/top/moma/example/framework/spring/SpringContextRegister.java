@@ -1,4 +1,4 @@
-package top.moma.example.infrastructure.hepler.spring;
+package top.moma.example.framework.spring;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -13,14 +13,14 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class SpringContextRegister implements ApplicationContextAware {
-  private static ApplicationContext APPLICATION_CONTEXT;
+  private static ApplicationContext applicationContext;
 
   static ApplicationContext getApplicationContext() {
-    return APPLICATION_CONTEXT;
+    return applicationContext;
   }
 
   static void setStaticApplicationContext(ApplicationContext applicationContext) {
-    APPLICATION_CONTEXT = applicationContext;
+    SpringContextRegister.applicationContext = applicationContext;
   }
 
   @Override
