@@ -1,5 +1,9 @@
 package top.moma.example.controller;
 
+import com.alibaba.fastjson.JSON;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.skywalking.apm.toolkit.trace.TraceContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.moma.example.apollo.TestService;
-
-import javax.servlet.http.HttpServletRequest;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Enumeration;
+import top.moma.example.cache.CacheHelper;
+import top.moma.example.cache.RemovableContacts;
 
 @Slf4j
 @RestController
@@ -26,6 +27,36 @@ public class TestController {
 
     log.info("--------Test - value");
     return "TEst";
+  }
+
+  @GetMapping("/cache/test")
+  public String cacheTest() {
+    RemovableContacts removableContacts =
+        RemovableContacts.builder()
+            .userId("123")
+            .refId("abc")
+            .deleteMark(2)
+            .dataId(999L)
+            .serviceType("AATransfer")
+            .build();
+    String cacheKey = "REMOVE_" + UUID.randomUUID();
+    CacheHelper.put(cacheKey, removableContacts);
+    List<String> cacheKeys = CacheHelper.getKeys();
+    for (String key : cacheKeys) {
+      if (key.startsWith("REMOVE_")) {
+        Object obj = CacheHelper.get(key);
+        if (Objects.nonNull(obj)) {
+          try {
+            RemovableContacts r = (RemovableContacts) obj;
+            System.out.println(JSON.toJSONString(r));
+            CacheHelper.remove(key);
+          } catch (Exception e) {
+            log.error("sendDelayRemove error", e);
+          }
+        }
+      }
+    }
+    return "pl";
   }
 
   @GetMapping("/test/v")
